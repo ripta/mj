@@ -12,7 +12,7 @@ var kvSeparator string
 var showVersion bool
 
 func main() {
-  flag.StringVar(&kvSeparator, "kv-sep", "=", "Separator between key and value")
+  flag.StringVar(&kvSeparator, "s", "=", "Separator between key and value")
   flag.BoolVar(&showVersion, "version", false, "Show version")
   flag.Parse()
 
