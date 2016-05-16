@@ -29,18 +29,24 @@ func (s Struct) Set(keyPath string, value interface{}) (error) {
       return fmt.Errorf("Key sub-path #%d in %s must not be empty", keyIdx, keyPath)
     }
 
+    usedPath := strings.Join(keys[0:keyIdx], ".")
+    newPath  := strings.Join(keys[0:keyIdx + 1], ".")
+
     // TODO(rpasay): a better, safer alternative?
     if nest, ok := data.(Struct); ok {
       if keyIdx == len(keys) - 1 {
-        nest[key] = value
+        // Check to ensure nest[key] wasn't already initialized
+        if nest[key] == nil {
+          nest[key] = value
+        } else {
+          return fmt.Errorf("Key path '%s' was already assigned a %T value, and cannot be overwritten", usedPath, data)
+        }
       } else if nest[key] == nil {
         nest[key] = Struct{}
       }
 
       data = nest[key]
     } else {
-      usedPath := strings.Join(keys[0:keyIdx], ".")
-      newPath  := strings.Join(keys[0:keyIdx + 1], ".")
       return fmt.Errorf("Key path '%s' was already assigned a %T value, and cannot be reassigned '%s'", usedPath, data, newPath)
     }
   }
