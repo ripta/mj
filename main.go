@@ -1,23 +1,30 @@
 package main
 
+import "flag"
 import "fmt"
 import "log"
 import "os"
 import "strings"
 
 var logger = log.New(os.Stderr, "", 0)
-var sep string = "="
+
+var kvSeparator string
+var showVersion bool
 
 func main() {
-  if len(os.Args) == 2 && os.Args[1] == "-version" {
+  flag.StringVar(&kvSeparator, "kv-sep", "=", "Separator between key and value")
+  flag.BoolVar(&showVersion, "version", false, "Show version")
+  flag.Parse()
+
+  if showVersion {
     logger.Printf("MJ v%s (built %s)", versionString(), buildString())
     os.Exit(0)
   }
 
   input := Struct{}
 
-  for _, arg := range os.Args[1:] {
-    substrings := strings.SplitN(arg, sep, 2)
+  for _, arg := range flag.Args() {
+    substrings := strings.SplitN(arg, kvSeparator, 2)
     err := input.Set(substrings[0], substrings[1])
     if err != nil {
       logger.Printf("%v\n", err)
