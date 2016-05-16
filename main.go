@@ -17,7 +17,7 @@ func main() {
   flag.Parse()
 
   if showVersion {
-    logger.Printf("MJ v%s (built %s)", versionString(), buildString())
+    logger.Printf("mj v%s (built %s)", versionString(), buildString())
     os.Exit(0)
   }
 
