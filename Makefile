@@ -10,3 +10,6 @@ clean:
 
 mj: $(FILES)
 	go build -ldflags "-X main.version=${MJVERSION} -X main.builtAt=${MJBUILDTS}"
+
+test: $(FILES)
+	go test
