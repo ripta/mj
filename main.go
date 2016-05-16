@@ -9,6 +9,11 @@ var logger = log.New(os.Stderr, "", 0)
 var sep string = "="
 
 func main() {
+  if len(os.Args) == 2 && os.Args[1] == "-version" {
+    logger.Printf("MJ v%s (built %s)", versionString(), buildString())
+    os.Exit(0)
+  }
+
   input := Struct{}
 
   for _, arg := range os.Args[1:] {
