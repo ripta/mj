@@ -11,7 +11,17 @@ var logger = log.New(os.Stderr, "", 0)
 var kvSeparator string
 var showVersion bool
 
+func usage() {
+	fmt.Fprintf(os.Stderr, "%s v%s built %s\n\n", os.Args[0], versionString(), buildString())
+	fmt.Fprintf(os.Stderr, "Usage:\n")
+	fmt.Fprintf(os.Stderr, "  %s [options...] <key=value...>\n\n", os.Args[0])
+	fmt.Fprintf(os.Stderr, "Options:\n")
+	flag.PrintDefaults()
+	fmt.Fprintf(os.Stderr, "\n")
+}
+
 func main() {
+	flag.Usage = usage
 	flag.StringVar(&kvSeparator, "s", "=", "Separator between key and value")
 	flag.BoolVar(&showVersion, "version", false, "Show version")
 	flag.Parse()
