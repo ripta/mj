@@ -25,10 +25,13 @@ func main() {
 
 	for _, arg := range flag.Args() {
 		substrings := strings.SplitN(arg, kvSeparator, 2)
+		if len(substrings) != 2 {
+			logger.Fatalf("Missing separator (%q) in %q\n", kvSeparator, arg)
+		}
+
 		err := input.Set(substrings[0], substrings[1])
 		if err != nil {
-			logger.Printf("%v\n", err)
-			os.Exit(1)
+			logger.Fatalf("%v\n", err)
 		}
 	}
 
