@@ -12,7 +12,7 @@ var kvSeparator string
 var showVersion bool
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "%s v%s built %s\n\n", os.Args[0], versionString(), buildString())
+	fmt.Fprintf(os.Stderr, "%s v%s built %s\n\n", os.Args[0], BuildVersion, BuildDate)
 	fmt.Fprintf(os.Stderr, "Usage:\n")
 	fmt.Fprintf(os.Stderr, "  %s [options...] <key=value...>\n\n", os.Args[0])
 	fmt.Fprintf(os.Stderr, "Options:\n")
@@ -27,7 +27,7 @@ func main() {
 	flag.Parse()
 
 	if showVersion {
-		logger.Printf("mj v%s (built %s)", versionString(), buildString())
+		logger.Printf("mj v%s (built %s)", BuildVersion, BuildDate)
 		os.Exit(0)
 	}
 
