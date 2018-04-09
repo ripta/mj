@@ -8,9 +8,8 @@ ENV MJ_BUILD_DATE=$MJ_BUILD_DATE MJ_VERSION=$MJ_VERSION
 
 WORKDIR $GOPATH/src/$GOPROJ
 COPY . .
-RUN git checkout v$MJ_VERSION
 RUN go get -d ./...
-RUN go install -ldflags "-s -w -X main.BuildCommit=$(git describe) -X main.BuildVersion=$MJ_VERSION -X main.BuildDate=$MJ_BUILD_DATE" ./...
+RUN go install -ldflags "-s -w -X main.BuildCommit=$(git rev-parse HEAD) -X main.BuildVersion=$MJ_VERSION -X main.BuildDate=$MJ_BUILD_DATE" ./...
 RUN mv $GOPATH/bin/mj /bin/mj
 
 FROM scratch

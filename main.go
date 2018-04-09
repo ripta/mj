@@ -8,7 +8,7 @@ import "os"
 var logger = log.New(os.Stderr, "", 0)
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "%s v%s built %s\n\n", os.Args[0], BuildVersion, BuildDate)
+	fmt.Fprintf(os.Stderr, "%s v%s built %s commit %s\n\n", os.Args[0], BuildVersion, BuildDate, BuildCommit)
 	fmt.Fprintf(os.Stderr, "Usage:\n")
 	fmt.Fprintf(os.Stderr, "  %s [options...] <key=value...>\n\n", os.Args[0])
 	fmt.Fprintf(os.Stderr, "Options:\n")
