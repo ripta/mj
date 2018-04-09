@@ -28,12 +28,10 @@ func usage() {
 }
 
 func main() {
-	var crMethod ConflictResolutionMethod
 	var kvSeparator, pathSeparator string
 	var showVersion bool
 
 	flag.Usage = usage
-	flag.Var(&crMethod, "c", "Conflict resolution method, one of: die, first, last")
 	flag.StringVar(&kvSeparator, "s", "=", "Separator between key and value")
 	flag.StringVar(&pathSeparator, "p", ".", "Separator between key-path components")
 	flag.BoolVar(&showVersion, "version", false, "Show version")
