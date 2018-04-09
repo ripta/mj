@@ -72,5 +72,5 @@ func (s Struct) setOn(data interface{}, key string, value interface{}) (interfac
 		return nest[key], nil
 	}
 	// fmt.Errorf("no handler for type %T", data)
-	return data, ErrUnknownHandler
+	return data, fmt.Errorf("cannot set key %q to %+#v on %T: operation not supported", key, value, data)
 }

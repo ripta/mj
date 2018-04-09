@@ -53,3 +53,10 @@ Error: flag provided but not defined: -really
 $ mj -- -really=why
 {"-really":"why"}
 ```
+
+There is also support for slices on the last level:
+
+```shell
+$ mj foo[]=abc foo[]=def
+{"foo":["abc","def"]}
+```

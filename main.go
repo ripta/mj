@@ -15,14 +15,15 @@ func usage() {
 	flag.PrintDefaults()
 	fmt.Fprintf(os.Stderr, "\n")
 	fmt.Fprintln(os.Stderr, `Key-value pairs:
-  mj foo=bar		{"foo":"bar"}
-  mj foo.bar=baz	{"foo":{"bar":"baz"}}
-  mj foo=bar baz=quux	{"baz":"quux","foo":"bar"}
-  mj a=b a=c		# Error: Key path was already assigned
-  mj foo:bar=baz	{"foo:bar":"baz"}
-  mj -s=: foo:bar=baz	{"foo":"bar=baz"}
-  mj -p=: foo:bar=baz	{"foo":{"bar":"baz"}}
-  mj -- -really=why	{"-really":"why"}`)
+  mj foo=bar			{"foo":"bar"}
+  mj foo.bar=baz		{"foo":{"bar":"baz"}}
+  mj foo=bar baz=quux		{"baz":"quux","foo":"bar"}
+  mj a=b a=c			# Error: Key path was already assigned
+  mj foo:bar=baz		{"foo:bar":"baz"}
+  mj -s=: foo:bar=baz		{"foo":"bar=baz"}
+  mj -p=: foo:bar=baz		{"foo":{"bar":"baz"}}
+  mj -- -really=why		{"-really":"why"}
+  mj foo[]=abc foo[]=def	{"foo":["abc","def"]}`)
 }
 
 func main() {
@@ -49,7 +50,7 @@ func main() {
 	for i, arg := range flag.Args() {
 		err := p.Process(arg)
 		if err != nil {
-			logger.Fatalf("%s: while processing argument #%d:\n\t%s\nError: %s\n", os.Args[0], i, arg, err)
+			logger.Fatalf("%s: encountered error while processing argument #%d: %q\n\tunderlying error: %v", os.Args[0], i, arg, err)
 		}
 	}
 
