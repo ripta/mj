@@ -54,8 +54,18 @@ var builderTests = []builderTest{
 			},
 		},
 	},
+	// [foo] => [bar]
+	// Slice values
+	{
+		name:    "kv-array",
+		keyPath: []string{"foo"},
+		value:   []string{"bar"},
+		expected: Struct{
+			"foo": []string{"bar"},
+		},
+	},
 	// [foo] => [bar: [baz: "quux"]]
-	// # Complex value types are preserved
+	// Map values
 	{
 		name:    "kv-int",
 		keyPath: []string{"foo"},
@@ -81,10 +91,10 @@ func TestBuilder(t *testing.T) {
 			obj := Struct{}
 			err := obj.Set(test.keyPath, test.value)
 			if err != test.err {
-				t.Fatalf("expected to result in error %v, but got %v", test.err, err)
+				t.Fatalf("expected build to error with %v, but got %v", test.err, err)
 			}
 			if !reflect.DeepEqual(obj, test.expected) {
-				t.Fatalf("expected to build strcuture %+v, but got %+v", test.expected, obj)
+				t.Fatalf("expected build to create structure %+v, but got %+v", test.expected, obj)
 			}
 		})
 	}
