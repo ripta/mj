@@ -4,12 +4,8 @@ import "flag"
 import "fmt"
 import "log"
 import "os"
-import "strings"
 
 var logger = log.New(os.Stderr, "", 0)
-
-var kvSeparator string
-var showVersion bool
 
 func usage() {
 	fmt.Fprintf(os.Stderr, "%s v%s built %s\n\n", os.Args[0], BuildVersion, BuildDate)
@@ -30,6 +26,9 @@ func usage() {
 }
 
 func main() {
+	var kvSeparator string
+	var showVersion bool
+
 	flag.Usage = usage
 	flag.StringVar(&kvSeparator, "s", "=", "Separator between key and value")
 	flag.BoolVar(&showVersion, "version", false, "Show version")
@@ -40,19 +39,17 @@ func main() {
 		os.Exit(0)
 	}
 
-	input := Struct{}
+	p := &Processor{
+		input:       Struct{},
+		kvSeparator: kvSeparator,
+	}
 
 	for _, arg := range flag.Args() {
-		substrings := strings.SplitN(arg, kvSeparator, 2)
-		if len(substrings) != 2 {
-			logger.Fatalf("Missing separator (%q) in %q\n", kvSeparator, arg)
-		}
-
-		err := input.Set(substrings[0], substrings[1])
+		err := p.Process(arg)
 		if err != nil {
-			logger.Fatalf("%v\n", err)
+			logger.Fatalf("%s: %s\n", os.Args[0], err)
 		}
 	}
 
-	fmt.Println(input.String())
+	fmt.Println(p.Output())
 }
