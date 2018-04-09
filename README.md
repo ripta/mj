@@ -26,7 +26,8 @@ $ mj foo.bar=baz
 {"foo":{"bar":"baz"}}
 ```
 
-There are command-line options to select a different separator for key-value pairs and for key paths:
+There are command-line options to select a different separator for key-value
+pairs and for key paths:
 
 ```shell
 $ mj foo:bar=baz
@@ -40,4 +41,15 @@ $ mj -p=: foo:bar=baz
 
 $ mj -p='->' 'foo->bar=baz'
 {"foo":{"bar":"baz"}}
+```
+
+If a key starts with `-`, it will be interpreted as a command line flag. To
+prevent that, use `--`:
+
+```shell
+$ mj -really=why
+Error: flag provided but not defined: -really
+
+$ mj -- -really=why
+{"-really":"why"}
 ```
