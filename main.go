@@ -48,10 +48,10 @@ func main() {
 		pathSeparator: pathSeparator,
 	}
 
-	for _, arg := range flag.Args() {
+	for i, arg := range flag.Args() {
 		err := p.Process(arg)
 		if err != nil {
-			logger.Fatalf("%s: %s\n", os.Args[0], err)
+			logger.Fatalf("%s: while processing argument #%d:\n\t%s\nError: %s\n", os.Args[0], i, arg, err)
 		}
 	}
 
