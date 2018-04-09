@@ -55,13 +55,23 @@ var builderTests = []builderTest{
 		},
 	},
 	// [foo] => [bar]
-	// Slice values
+	// Slice values keep their type
 	{
 		name:    "kv-array",
 		keyPath: []string{"foo"},
 		value:   []string{"bar"},
 		expected: Struct{
 			"foo": []string{"bar"},
+		},
+	},
+	// [foo] => [bar]
+	// Autovivified slice values are interface slices
+	{
+		name:    "kv-autoarray",
+		keyPath: []string{"foo[]"},
+		value:   "bar",
+		expected: Struct{
+			"foo": []interface{}{"bar"},
 		},
 	},
 	// [foo] => [bar: [baz: "quux"]]

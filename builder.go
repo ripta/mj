@@ -54,6 +54,16 @@ func (s Struct) String() string {
 
 func (s Struct) setOn(data interface{}, key string, value interface{}) (interface{}, error) {
 	if nest, ok := data.(Struct); ok {
+		if strings.HasSuffix(key, "[]") {
+			key = strings.TrimSuffix(key, "[]")
+			if nest[key] == nil {
+				nest[key] = make([]interface{}, 0)
+			}
+			if slice, ok2 := nest[key].([]interface{}); ok2 {
+				nest[key] = append(slice, value)
+				return nest[key], nil
+			}
+		}
 		if nest[key] != nil {
 			// fmt.Errorf("already assigned a %T value and cannot be re-typed", nest[key])
 			return nest[key], ErrAlreadyExists
