@@ -1,28 +1,91 @@
 package main
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
-func TestBuildSimpleJSON(t *testing.T) {
-	var obj Struct
-	var err error
+type builderTest struct {
+	name     string
+	keyPath  []string
+	value    interface{}
+	expected Struct
+	err      error
+}
 
-	obj = Struct{}
+var builderTests = []builderTest{
+	// [foo] => "bar"
+	{
+		name:    "kv-string",
+		keyPath: []string{"foo"},
+		value:   "bar",
+		expected: Struct{
+			"foo": "bar",
+		},
+	},
+	// [foo] => 123
+	{
+		name:    "kv-int",
+		keyPath: []string{"foo"},
+		value:   123,
+		expected: Struct{
+			"foo": 123,
+		},
+	},
+	// [foo] => true
+	{
+		name:    "kv-bool",
+		keyPath: []string{"foo"},
+		value:   true,
+		expected: Struct{
+			"foo": true,
+		},
+	},
+	// [foo, bar, baz] => "quux"
+	{
+		name:    "complex-path",
+		keyPath: []string{"foo", "bar", "baz"},
+		value:   "quux",
+		expected: Struct{
+			"foo": Struct{
+				"bar": Struct{
+					"baz": "quux",
+				},
+			},
+		},
+	},
+	// [foo] => [bar: [baz: "quux"]]
+	// # Complex value types are preserved
+	{
+		name:    "kv-int",
+		keyPath: []string{"foo"},
+		value: map[string]interface{}{
+			"bar": map[string]string{
+				"baz": "quux",
+			},
+		},
+		expected: Struct{
+			"foo": map[string]interface{}{
+				"bar": map[string]string{
+					"baz": "quux",
+				},
+			},
+		},
+	},
+}
 
-	err = obj.Set([]string{"hello"}, "world")
-	if err != nil {
-		t.Errorf("Error: %v", err)
-		return
-	}
-
-	err = obj.Set([]string{"foo", "bar"}, "baz")
-	if err != nil {
-		t.Errorf("Error: %v", err)
-		return
-	}
-
-	actualJSON := obj.String()
-	expectedJSON := `{"foo":{"bar":"baz"},"hello":"world"}`
-	if actualJSON != expectedJSON {
-		t.Errorf("Error: Expected %v, actual %v", expectedJSON, actualJSON)
+func TestBuilder(t *testing.T) {
+	for _, test := range builderTests {
+		test := test // range capture
+		t.Run(test.name, func(t *testing.T) {
+			obj := Struct{}
+			err := obj.Set(test.keyPath, test.value)
+			if err != test.err {
+				t.Fatalf("expected to result in error %v, but got %v", test.err, err)
+			}
+			if !reflect.DeepEqual(obj, test.expected) {
+				t.Fatalf("expected to build strcuture %+v, but got %+v", test.expected, obj)
+			}
+		})
 	}
 }

@@ -18,7 +18,6 @@ func usage() {
   mj foo=bar		{"foo":"bar"}
   mj foo.bar=baz	{"foo":{"bar":"baz"}}
   mj foo=bar baz=quux	{"baz":"quux","foo":"bar"}
-			# Keys are automatically sorted
   mj a=b a=c		# Error: Key path was already assigned
   mj foo:bar=baz	{"foo:bar":"baz"}
   mj -s=: foo:bar=baz	{"foo":"bar=baz"}
