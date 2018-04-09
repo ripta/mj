@@ -18,13 +18,13 @@ func (s Struct) Bytes() []byte {
 
 func (s Struct) Set(keyPath []string, value interface{}) error {
 	if len(keyPath) == 0 {
-		return errors.New("Key path must not be empty")
+		return errors.New("key path must not be empty")
 	}
 
 	var data interface{} = s
 	for keyIdx, key := range keyPath {
 		if len(key) == 0 {
-			return fmt.Errorf("Key sub-path #%d in %s must not be empty", keyIdx, keyPath)
+			return fmt.Errorf("key sub-path #%d in %s must not be empty", keyIdx, keyPath)
 		}
 
 		usedPath := strings.Join(keyPath[0:keyIdx], ".")
@@ -37,7 +37,7 @@ func (s Struct) Set(keyPath []string, value interface{}) error {
 				if nest[key] == nil {
 					nest[key] = value
 				} else {
-					return fmt.Errorf("Key path '%s' was already assigned a %T value, and cannot be overwritten", usedPath, data)
+					return fmt.Errorf("key path %q was already assigned a %T value, and cannot be overwritten", newPath, nest[key])
 				}
 			} else if nest[key] == nil {
 				nest[key] = Struct{}
@@ -45,7 +45,7 @@ func (s Struct) Set(keyPath []string, value interface{}) error {
 
 			data = nest[key]
 		} else {
-			return fmt.Errorf("Key path '%s' was already assigned a %T value, and cannot be reassigned '%s'", usedPath, data, newPath)
+			return fmt.Errorf("key path %q was already assigned a %T value, and cannot be reassigned in %q", usedPath, data, newPath)
 		}
 	}
 
