@@ -1,4 +1,4 @@
-FROM golang:1.9.2-alpine3.6 AS build
+FROM golang:1.10-alpine3.7 AS build
 RUN apk add --update --no-cache git
 
 ARG MJ_BUILD_DATE
