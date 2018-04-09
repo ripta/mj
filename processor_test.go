@@ -90,7 +90,7 @@ var processorTests = []processorTest{
 		},
 		expectedResults: []error{
 			nil,
-			errors.New(`key path "foo" was already assigned a string value, and cannot be overwritten`),
+			errors.New(`while processing key path [foo]: already assigned a string value and cannot be re-typed`),
 		},
 	},
 	// Multiple keys with type overwrite error
@@ -107,7 +107,7 @@ var processorTests = []processorTest{
 		},
 		expectedResults: []error{
 			nil,
-			errors.New(`key path "foo" was already assigned a main.Struct value, and cannot be overwritten`),
+			errors.New(`while processing key path [foo]: already assigned a main.Struct value and cannot be re-typed`),
 		},
 	},
 }
@@ -136,12 +136,14 @@ func TestProcessor(t *testing.T) {
 				}
 			} else {
 				if len(results) != len(test.expectedResults) {
-					t.Fatalf("error count mismatch, expected %d but got %d\n\texpected: %+v\n\tbut got: %+v",
+					t.Fatalf("error count mismatch, expected %d but got %d\n\texpected: %+v\n\tbut got : %+v",
 						len(test.expectedResults), len(results), test.expectedResults, results)
 				}
 				for i, res := range test.expectedResults {
-					if !reflect.DeepEqual(res, results[i]) {
-						t.Fatalf("error mismatch on result #%d, expected: %+v, but got: %+v", i, res, results[i])
+					if (res == nil && results[i] != nil) ||
+						(res != nil && results[i] == nil) ||
+						(res != nil && results[i] != nil && (res.Error() != results[i].Error())) {
+						t.Fatalf("error mismatch on result #%d,\n\texpected: %v,\n\tbut got : %v", i, res, results[i])
 					}
 				}
 			}
