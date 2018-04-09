@@ -90,7 +90,7 @@ var processorTests = []processorTest{
 		},
 		expectedResults: []error{
 			nil,
-			errors.New(`while processing key path [foo]: already assigned a string value and cannot be re-typed`),
+			errors.New(`while processing key path [foo]: already exists`),
 		},
 	},
 	// Multiple keys with type overwrite error
@@ -107,7 +107,7 @@ var processorTests = []processorTest{
 		},
 		expectedResults: []error{
 			nil,
-			errors.New(`while processing key path [foo]: already assigned a main.Struct value and cannot be re-typed`),
+			errors.New(`while processing key path [foo]: already exists`),
 		},
 	},
 }
@@ -132,7 +132,15 @@ func TestProcessor(t *testing.T) {
 			}
 			if test.expectedResults == nil {
 				if errorCount > 0 {
-					t.Fatalf("expected no errors in process, but got: %+v", results)
+					resultStrings := []string{}
+					for _, res := range results {
+						if res == nil {
+							resultStrings = append(resultStrings, "")
+						} else {
+							resultStrings = append(resultStrings, res.Error())
+						}
+					}
+					t.Fatalf("expected no errors in process, but got %d errors: %#v", errorCount, resultStrings)
 				}
 			} else {
 				if len(results) != len(test.expectedResults) {

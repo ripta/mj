@@ -9,6 +9,11 @@ import "github.com/pkg/errors"
 // I hate myself (a little) for this.
 type Struct map[string]interface{}
 
+var (
+	ErrAlreadyExists  = errors.New("already exists")
+	ErrUnknownHandler = errors.New("unknown handler")
+)
+
 func (s Struct) Bytes() []byte {
 	if bytes, err := json.Marshal(s); err == nil {
 		return bytes
@@ -29,22 +34,17 @@ func (s Struct) Set(keyPath []string, value interface{}) error {
 			return fmt.Errorf("key sub-path #%d in %s must not be empty", keyIdx, keyPath)
 		}
 
-		usedPath := strings.Join(keyPath[0:keyIdx], ".")
+		// usedPath := strings.Join(keyPath[0:keyIdx], ".")
 		newPath := strings.Join(keyPath[0:keyIdx+1], ".")
 
-		// TODO(rpasay): a better, safer alternative?
-		if nest, ok := data.(Struct); ok {
-			if nest[key] == nil {
-				nest[key] = Struct{}
-			}
-
-			data = nest[key]
-		} else {
-			return fmt.Errorf("key path %q was already assigned a %T value, and cannot be reassigned in %q", usedPath, data, newPath)
+		dataNext, err := s.setOn(data, key, Struct{})
+		if err != nil && err != ErrAlreadyExists {
+			return errors.Wrapf(err, "while processing key path %q", newPath)
 		}
+		data = dataNext
 	}
 
-	err := s.setOn(data, keyName, value)
+	_, err := s.setOn(data, keyName, value)
 	return errors.Wrapf(err, "while processing key path %v", keyPath)
 }
 
@@ -52,13 +52,15 @@ func (s Struct) String() string {
 	return string(s.Bytes())
 }
 
-func (s Struct) setOn(data interface{}, key string, value interface{}) error {
+func (s Struct) setOn(data interface{}, key string, value interface{}) (interface{}, error) {
 	if nest, ok := data.(Struct); ok {
-		if nest[key] == nil {
-			nest[key] = value
-			return nil
+		if nest[key] != nil {
+			// fmt.Errorf("already assigned a %T value and cannot be re-typed", nest[key])
+			return nest[key], ErrAlreadyExists
 		}
-		return fmt.Errorf("already assigned a %T value and cannot be re-typed", nest[key])
+		nest[key] = value
+		return nest[key], nil
 	}
-	return fmt.Errorf("no handler for type %T", data)
+	// fmt.Errorf("no handler for type %T", data)
+	return data, ErrUnknownHandler
 }
