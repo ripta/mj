@@ -50,7 +50,7 @@ func main() {
 	for i, arg := range flag.Args() {
 		err := p.Process(arg)
 		if err != nil {
-			logger.Fatalf("%s: encountered error while processing argument #%d: %q\n\tunderlying error: %v", os.Args[0], i, arg, err)
+			logger.Fatalf("%s: encountered error while processing argument #%d: %q\n\t%v", os.Args[0], i, arg, err)
 		}
 	}
 

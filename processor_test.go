@@ -90,7 +90,7 @@ var processorTests = []processorTest{
 		},
 		expectedResults: []error{
 			nil,
-			errors.New(`while processing key path [foo]: already exists`),
+			errors.New(`in key path "foo": already exists`),
 		},
 	},
 	// Multiple keys with type overwrite error
@@ -107,7 +107,7 @@ var processorTests = []processorTest{
 		},
 		expectedResults: []error{
 			nil,
-			errors.New(`while processing key path [foo]: already exists`),
+			errors.New(`in key path "foo": already exists`),
 		},
 	},
 	// Slice keys are autovivified and merged correctly

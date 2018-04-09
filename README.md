@@ -60,3 +60,11 @@ There is also support for slices on the last level:
 $ mj foo[]=abc foo[]=def
 {"foo":["abc","def"]}
 ```
+
+But the operation is not supported on deeply-nested objects yet:
+
+```shell
+$ mj foo[].bar=abc foo[].bar=def
+mj: encountered error while processing argument #0: "foo[].bar=abc"
+	underlying error: while processing key path [foo[] bar]: cannot set key "bar" to "abc" on []interface {}: not supported
+```

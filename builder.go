@@ -45,7 +45,7 @@ func (s Struct) Set(keyPath []string, value interface{}) error {
 	}
 
 	_, err := s.setOn(data, keyName, value)
-	return errors.Wrapf(err, "while processing key path %v", keyPath)
+	return errors.Wrapf(err, "in key path %q", strings.Join(keyPath, "."))
 }
 
 func (s Struct) String() string {
@@ -71,6 +71,5 @@ func (s Struct) setOn(data interface{}, key string, value interface{}) (interfac
 		nest[key] = value
 		return nest[key], nil
 	}
-	// fmt.Errorf("no handler for type %T", data)
-	return data, fmt.Errorf("cannot set key %q to %+#v on %T: operation not supported", key, value, data)
+	return data, fmt.Errorf("cannot set key %q to %+#v on %T: operation not yet supported", key, value, data)
 }
