@@ -23,8 +23,7 @@ func usage() {
   mj foo:bar=baz	{"foo:bar":"baz"}
   mj -s=: foo:bar=baz	{"foo":"bar=baz"}
   mj -p=: foo:bar=baz	{"foo":{"bar":"baz"}}
-  mj -- -really=why	{"-really":"why"}
-`)
+  mj -- -really=why	{"-really":"why"}`)
 }
 
 func main() {
