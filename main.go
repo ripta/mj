@@ -41,9 +41,9 @@ func main() {
 	}
 
 	p := &Processor{
-		input:         Struct{},
-		kvSeparator:   kvSeparator,
-		pathSeparator: pathSeparator,
+		Input:             Struct{},
+		KeyValueSeparator: kvSeparator,
+		KeyPathSeparator:  pathSeparator,
 	}
 
 	for i, arg := range flag.Args() {
