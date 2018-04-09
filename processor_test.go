@@ -110,6 +110,34 @@ var processorTests = []processorTest{
 			errors.New(`while processing key path [foo]: already exists`),
 		},
 	},
+	// Slice keys are autovivified and merged correctly
+	{
+		name:          "slice-values-only",
+		kvSeparator:   "=",
+		pathSeparator: ".",
+		orig:          Struct{},
+		inputs:        []string{"foo.bar[]=abc", "foo.bar[]=def", "foo.bar[]=ghi"},
+		expected: Struct{
+			"foo": Struct{
+				"bar": []interface{}{"abc", "def", "ghi"},
+			},
+		},
+	},
+	// Slice keys on multiple levels
+	{
+		name:          "slice-values-multi",
+		kvSeparator:   "=",
+		pathSeparator: ".",
+		orig:          Struct{},
+		inputs:        []string{"foo.bar[]=abc", "foo.bar[]=def", "quux[]=ghi", "quux[]=jkl", "hello=world"},
+		expected: Struct{
+			"foo": Struct{
+				"bar": []interface{}{"abc", "def"},
+			},
+			"quux":  []interface{}{"ghi", "jkl"},
+			"hello": "world",
+		},
+	},
 }
 
 func TestProcessor(t *testing.T) {
