@@ -16,25 +16,23 @@ func (s Struct) Bytes() []byte {
 	return []byte("{ }")
 }
 
-func (s Struct) Set(keyPath string, value interface{}) error {
+func (s Struct) Set(keyPath []string, value interface{}) error {
 	if len(keyPath) == 0 {
 		return errors.New("Key path must not be empty")
 	}
 
-	keys := strings.Split(keyPath, ".")
-
 	var data interface{} = s
-	for keyIdx, key := range keys {
+	for keyIdx, key := range keyPath {
 		if len(key) == 0 {
 			return fmt.Errorf("Key sub-path #%d in %s must not be empty", keyIdx, keyPath)
 		}
 
-		usedPath := strings.Join(keys[0:keyIdx], ".")
-		newPath := strings.Join(keys[0:keyIdx+1], ".")
+		usedPath := strings.Join(keyPath[0:keyIdx], ".")
+		newPath := strings.Join(keyPath[0:keyIdx+1], ".")
 
 		// TODO(rpasay): a better, safer alternative?
 		if nest, ok := data.(Struct); ok {
-			if keyIdx == len(keys)-1 {
+			if keyIdx == len(keyPath)-1 {
 				// Check to ensure nest[key] wasn't already initialized
 				if nest[key] == nil {
 					nest[key] = value

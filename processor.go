@@ -6,9 +6,9 @@ import (
 )
 
 type Processor struct {
-	input Struct
-
-	kvSeparator string
+	input         Struct
+	kvSeparator   string
+	pathSeparator string
 }
 
 func (p *Processor) Output() Struct {
@@ -21,5 +21,6 @@ func (p *Processor) Process(arg string) error {
 		return fmt.Errorf("missing separator (%q) in %q", p.kvSeparator, arg)
 	}
 
-	return p.input.Set(segments[0], segments[1])
+	keyPath := strings.Split(segments[0], p.pathSeparator)
+	return p.input.Set(keyPath, segments[1])
 }

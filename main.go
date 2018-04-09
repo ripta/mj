@@ -22,15 +22,18 @@ func usage() {
   mj a=b a=c		# Error: Key path was already assigned
   mj foo:bar=baz	{"foo:bar":"baz"}
   mj -s=: foo:bar=baz	{"foo":"bar=baz"}
+  mj -p=: foo:bar=baz	{"foo":{"bar":"baz"}}
 `)
 }
 
 func main() {
 	var kvSeparator string
+	var pathSeparator string
 	var showVersion bool
 
 	flag.Usage = usage
 	flag.StringVar(&kvSeparator, "s", "=", "Separator between key and value")
+	flag.StringVar(&pathSeparator, "p", ".", "Separator between key-path components")
 	flag.BoolVar(&showVersion, "version", false, "Show version")
 	flag.Parse()
 
@@ -40,8 +43,9 @@ func main() {
 	}
 
 	p := &Processor{
-		input:       Struct{},
-		kvSeparator: kvSeparator,
+		input:         Struct{},
+		kvSeparator:   kvSeparator,
+		pathSeparator: pathSeparator,
 	}
 
 	for _, arg := range flag.Args() {
