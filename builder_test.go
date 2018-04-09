@@ -8,13 +8,13 @@ func TestBuildSimpleJSON(t *testing.T) {
 
 	obj = Struct{}
 
-	err = obj.Set("hello", "world")
+	err = obj.Set([]string{"hello"}, "world")
 	if err != nil {
 		t.Errorf("Error: %v", err)
 		return
 	}
 
-	err = obj.Set("foo.bar", "baz")
+	err = obj.Set([]string{"foo", "bar"}, "baz")
 	if err != nil {
 		t.Errorf("Error: %v", err)
 		return
