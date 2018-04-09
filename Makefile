@@ -1,4 +1,4 @@
-MJVERSION=2-beta
+MJVERSION=2
 MJBUILDTS=$(shell date -u +'%Y%m%d-%H%M%S')
 
 FILES=$(shell find . -type f -name '*.go')
