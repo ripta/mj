@@ -23,7 +23,12 @@ func usage() {
   mj -s=: foo:bar=baz		{"foo":"bar=baz"}
   mj -p=: foo:bar=baz		{"foo":{"bar":"baz"}}
   mj -- -really=why		{"-really":"why"}
-  mj foo[]=abc foo[]=def	{"foo":["abc","def"]}`)
+  mj foo[]=abc foo[]=def	{"foo":["abc","def"]}
+  
+  echo hello-world > bar.txt
+  mj foo=@bar.txt		{"foo":"@bar.txt"}
+  mj -r=@ foo=@bar.txt		{"foo":"hello-world\n"}
+  `)
 }
 
 func main() {
