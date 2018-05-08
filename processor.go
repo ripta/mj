@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"strings"
 )
 
@@ -9,6 +10,7 @@ type Processor struct {
 	Input             Struct
 	KeyValueSeparator string
 	KeyPathSeparator  string
+	ReadFilePrefix    string
 }
 
 func (p *Processor) Output() Struct {
@@ -22,5 +24,16 @@ func (p *Processor) Process(arg string) error {
 	}
 
 	keyPath := strings.Split(segments[0], p.KeyPathSeparator)
-	return p.Input.Set(keyPath, segments[1])
+	value := segments[1]
+
+	if p.ReadFilePrefix != "" && strings.HasPrefix(value, p.ReadFilePrefix) {
+		fn := strings.TrimPrefix(value, p.ReadFilePrefix)
+		v, err := ioutil.ReadFile(fn)
+		if err != nil {
+			return err
+		}
+		value = string(v)
+	}
+
+	return p.Input.Set(keyPath, value)
 }

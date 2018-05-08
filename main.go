@@ -28,11 +28,13 @@ func usage() {
 
 func main() {
 	var kvSeparator, pathSeparator string
+	var readFilePrefix string
 	var showVersion bool
 
 	flag.Usage = usage
 	flag.StringVar(&kvSeparator, "s", "=", "Separator between key and value")
 	flag.StringVar(&pathSeparator, "p", ".", "Separator between key-path components")
+	flag.StringVar(&readFilePrefix, "r", "", "Prefix (for values) that indicate reading from a local file; reading value from a file is disabled when this flag is empty (default empty)")
 	flag.BoolVar(&showVersion, "version", false, "Show version")
 	flag.Parse()
 
@@ -45,6 +47,7 @@ func main() {
 		Input:             Struct{},
 		KeyValueSeparator: kvSeparator,
 		KeyPathSeparator:  pathSeparator,
+		ReadFilePrefix:    readFilePrefix,
 	}
 
 	for i, arg := range flag.Args() {
