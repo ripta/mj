@@ -68,3 +68,18 @@ $ mj foo[].bar=abc foo[].bar=def
 mj: encountered error while processing argument #0: "foo[].bar=abc"
 	underlying error: while processing key path [foo[] bar]: cannot set key "bar" to "abc" on []interface {}: not supported
 ```
+
+By default, values are interpreted as-is:
+
+```shell
+$ mj foo=@bar.txt
+{"foo":"@bar.txt"}
+```
+
+However, you can designate certain prefixes to read values from a file:
+
+```shell
+$ echo hello-world > bar.txt
+$ mj -r=@ foo=@bar.txt
+{"foo":"hello-world\n"}
+```
