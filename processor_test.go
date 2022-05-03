@@ -90,7 +90,7 @@ var processorTests = []processorTest{
 		},
 		expectedResults: []error{
 			nil,
-			errors.New(`in key path "foo": already exists`),
+			ErrAlreadyExists,
 		},
 	},
 	// Multiple keys with type overwrite error
@@ -107,7 +107,7 @@ var processorTests = []processorTest{
 		},
 		expectedResults: []error{
 			nil,
-			errors.New(`in key path "foo": already exists`),
+			ErrAlreadyExists,
 		},
 	},
 	// Slice keys are autovivified and merged correctly
@@ -191,13 +191,13 @@ func TestProcessor(t *testing.T) {
 				for i, res := range test.expectedResults {
 					if (res == nil && results[i] != nil) ||
 						(res != nil && results[i] == nil) ||
-						(res != nil && results[i] != nil && (res.Error() != results[i].Error())) {
+						(res != nil && results[i] != nil && !errors.Is(results[i], res)) {
 						t.Fatalf("error mismatch on result #%d,\n\texpected: %v,\n\tbut got : %v", i, res, results[i])
 					}
 				}
 			}
 			if out := p.Output(); !reflect.DeepEqual(out, test.expected) {
-				t.Fatalf("expected to build strcuture %+v, but got %+v", test.expected, out)
+				t.Fatalf("expected to build structure %#v, but got %#v", test.expected, out)
 			}
 		})
 	}
