@@ -28,6 +28,7 @@ func usage() {
   echo hello-world > bar.txt
   mj foo=@bar.txt		{"foo":"@bar.txt"}
   mj -r=@ foo=@bar.txt		{"foo":"hello-world\n"}
+  mj -r=@ foo=@<(date)		{"foo":"Mon Apr 25 00:00:34 PDT 2022\n"}
   `)
 }
 
