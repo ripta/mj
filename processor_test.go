@@ -151,6 +151,23 @@ var processorTests = []processorTest{
 			"foo": "bar",
 		},
 	},
+	{
+		name:          "error-slice",
+		kvSeparator:   "=",
+		pathSeparator: ".",
+		orig:          Struct{},
+		inputs:        []string{"foo[].bar=abc", "foo[].baz=def"},
+		expected: Struct{
+			"foo": []interface{}{
+				Struct{},
+				Struct{},
+			},
+		},
+		expectedResults: []error{
+			ErrUnsupported,
+			ErrUnsupported,
+		},
+	},
 }
 
 func TestProcessor(t *testing.T) {
