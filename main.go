@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 )
@@ -31,15 +33,19 @@ func usage() {
   mj foo=@bar.txt		{"foo":"@bar.txt"}
   mj -r=@ foo=@bar.txt		{"foo":"hello-world\n"}
   mj -r=@ foo=@<(date)		{"foo":"Mon Apr 25 00:00:34 PDT 2022\n"}
+
+  mj foo=bar | mj baz=quux	{"baz":"quux"}
+  mj foo=bar | mj -m=- baz=quux	{"baz":"quux","foo":"bar"}
   `)
 }
 
 func main() {
 	var kvSeparator, pathSeparator string
-	var readFilePrefix string
+	var readFilePrefix, readFrom string
 	var showVersion bool
 
 	flag.Usage = usage
+	flag.StringVar(&readFrom, "m", "", "Merge input from file; use '-' for STDIN (default empty)")
 	flag.StringVar(&kvSeparator, "s", "=", "Separator between key and value")
 	flag.StringVar(&pathSeparator, "p", ".", "Separator between key-path components")
 	flag.StringVar(&readFilePrefix, "r", "", "Prefix (for values) that indicate reading from a local file; reading value from a file is disabled when this flag is empty (default empty)")
@@ -51,8 +57,29 @@ func main() {
 		os.Exit(0)
 	}
 
+	in := Struct{}
+	if readFrom != "" {
+		if readFrom == "-" {
+			bs, err := io.ReadAll(os.Stdin)
+			if err != nil {
+				logger.Fatalf("%s: encountered error reading from STDIN: %v", os.Args[0], err)
+			}
+			if err := json.Unmarshal(bs, &in); err != nil {
+				logger.Fatalf("%s: encountered error unmarshaling payload from STDIN: %v", os.Args[0], err)
+			}
+		} else {
+			bs, err := os.ReadFile(readFrom)
+			if err != nil {
+				logger.Fatalf("%s: encountered error reading from %s: %v", os.Args[0], readFrom, err)
+			}
+			if err := json.Unmarshal(bs, &in); err != nil {
+				logger.Fatalf("%s: encountered error unmarshaling payload from %s: %v", os.Args[0], readFrom, err)
+			}
+		}
+	}
+
 	p := &Processor{
-		Input:             Struct{},
+		Input:             in,
 		KeyValueSeparator: kvSeparator,
 		KeyPathSeparator:  pathSeparator,
 		ReadFilePrefix:    readFilePrefix,
