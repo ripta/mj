@@ -15,6 +15,7 @@ type Struct map[string]interface{}
 var (
 	ErrAlreadyExists  = errors.New("already exists")
 	ErrUnknownHandler = errors.New("unknown handler")
+	ErrUnsupported    = errors.New("operation not yet supported")
 )
 
 func (s Struct) Bytes() []byte {
@@ -74,5 +75,5 @@ func (s Struct) setOn(data interface{}, key string, value interface{}) (interfac
 		nest[key] = value
 		return nest[key], nil
 	}
-	return data, fmt.Errorf("cannot set key %q to %+#v on %T: operation not yet supported", key, value, data)
+	return data, errors.Wrapf(ErrUnsupported, "cannot set key %q to %+#v on %T", key, value, data)
 }
