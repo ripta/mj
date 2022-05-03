@@ -1,9 +1,11 @@
 package main
 
-import "flag"
-import "fmt"
-import "log"
-import "os"
+import (
+	"flag"
+	"fmt"
+	"log"
+	"os"
+)
 
 var logger = log.New(os.Stderr, "", 0)
 

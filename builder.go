@@ -1,9 +1,12 @@
 package main
 
-import "encoding/json"
-import "fmt"
-import "strings"
-import "github.com/pkg/errors"
+import (
+	"encoding/json"
+	"fmt"
+	"strings"
+
+	"github.com/pkg/errors"
+)
 
 // Uselessly generic interfaces deserve uselessly generic names, right?
 // I hate myself (a little) for this.
