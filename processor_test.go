@@ -138,6 +138,19 @@ var processorTests = []processorTest{
 			"hello": "world",
 		},
 	},
+	{
+		name:          "non-empty-original",
+		kvSeparator:   "=",
+		pathSeparator: ".",
+		orig: Struct{
+			"foo": "bar",
+		},
+		inputs: []string{"baz=quux"},
+		expected: Struct{
+			"baz": "quux",
+			"foo": "bar",
+		},
+	},
 }
 
 func TestProcessor(t *testing.T) {
