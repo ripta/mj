@@ -1,17 +1,16 @@
-FROM golang:1.10-alpine3.7 AS build
-RUN apk add --update --no-cache git
-ENV GOPROJ=github.com/ripta/mj
-
 ARG MJ_BUILD_DATE
 ARG MJ_VERSION
-ENV MJ_BUILD_DATE=$MJ_BUILD_DATE MJ_VERSION=$MJ_VERSION
 
-WORKDIR $GOPATH/src/$GOPROJ
+FROM golang:1.19-bullseye AS build
+ENV MJ_BUILD_DATE=$MJ_BUILD_DATE MJ_VERSION=$MJ_VERSION
+WORKDIR $GOPATH/src/github.com/ripta/mj
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
 COPY . .
-RUN go get -d ./...
+RUN go test -v ./...
 RUN go install -ldflags "-s -w -X main.BuildCommit=$(git rev-parse HEAD) -X main.BuildVersion=$MJ_VERSION -X main.BuildDate=$MJ_BUILD_DATE" ./...
 RUN mv $GOPATH/bin/mj /bin/mj
 
-FROM scratch
+FROM debian:bullseye
 COPY --from=build /bin/mj /mj
 ENTRYPOINT ["/mj"]
