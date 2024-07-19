@@ -1,0 +1,7 @@
+exec mj foo=bar foo=quux
+! stdout .
+cmp stderr conflict.txt
+
+-- conflict.txt --
+mj: encountered error while processing argument #1: "foo=quux"
+	in key path "foo": already exists

@@ -1,0 +1,34 @@
+# mj takes dot-separated nested keys
+exec mj foo.bar=baz
+stdout '{"foo":{"bar":"baz"}}'
+! stderr .
+
+# dots can be arbitrarily deep
+exec mj foo.bar.baz.quux.tata.titi=toto
+stdout '{"foo":{"bar":{"baz":{"quux":{"tata":{"titi":"toto"}}}}}}'
+! stderr .
+
+# dots after the key-value separator are ignored
+exec mj foo.bar.baz.quux.tata.titi=toto.tutu.hoge
+stdout '{"foo":{"bar":{"baz":{"quux":{"tata":{"titi":"toto.tutu.hoge"}}}}}}'
+! stderr .
+
+# by default, other symbols are not used as path separators
+exec mj foo:bar=baz
+stdout '{"foo:bar":"baz"}'
+! stderr .
+
+# but path separators can be changed
+exec mj -p=: foo:bar=baz
+stdout '{"foo":{"bar":"baz"}}'
+! stderr .
+
+# and key-value separators can be changed too
+exec mj -s=: foo:bar=baz
+stdout '{"foo":"bar=baz"}'
+! stderr .
+
+# the first key-value separator is used, and subsequent ones are ignored
+exec mj foo=bar=baz
+stdout '{"foo":"bar=baz"}'
+! stderr .

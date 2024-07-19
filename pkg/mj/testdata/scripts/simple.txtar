@@ -1,0 +1,29 @@
+# mj succeeds given no arguments, and prints an empty JSON object
+exec mj
+stdout '{}'
+! stderr .
+
+# mj takes a simple key-value pair
+exec mj foo=bar
+stdout '{"foo":"bar"}'
+! stderr .
+
+# mj takes more than one key-value pairs
+exec mj baz=quux foo=bar
+stdout '{"baz":"quux","foo":"bar"}'
+! stderr .
+
+# mj takes more than one key-value pairs, and keys are in alphanumeric order
+exec mj foo=bar baz=quux
+stdout '{"baz":"quux","foo":"bar"}'
+! stderr .
+
+# keys with dashes cannot be bare
+! exec mj -really=why
+! stdout .
+stderr 'flag provided but not defined: -really'
+
+# argument parsing stops at '--'
+exec mj -- -really=why
+stdout '{"-really":"why"}'
+! stderr .

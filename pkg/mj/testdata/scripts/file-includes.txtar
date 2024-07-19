@@ -1,0 +1,14 @@
+# by default, file includes are disabled for security reasons
+exec mj foo=@bar.txt
+stdout '{"foo":"@bar.txt"}'
+! stderr .
+
+# but you can opt-in using the -r flag
+exec mj -r=@ foo=@bar.txt
+cmp stdout includes-bar.txt
+! stderr .
+
+-- bar.txt --
+hello-world
+-- includes-bar.txt --
+{"foo":"hello-world\n"}
