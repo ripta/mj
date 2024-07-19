@@ -1,0 +1,20 @@
+# stdin is ignored by default
+stdin foo.json
+exec mj baz=quux
+stdout '{"baz":"quux"}'
+! stderr .
+
+# but merging can be enabled using the -m flag
+# set it to - for stdin
+stdin foo.json
+exec mj -m=- baz=quux
+stdout '{"baz":"quux","foo":"bar"}'
+! stderr .
+
+# the filename can also be merged directly
+exec mj -m=foo.json baz=quux
+stdout '{"baz":"quux","foo":"bar"}'
+! stderr .
+
+-- foo.json --
+{"foo":"bar"}
