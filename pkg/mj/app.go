@@ -7,13 +7,14 @@ import (
 	"io"
 	"log"
 	"os"
+	"runtime/debug"
 )
 
 var logger = log.New(os.Stderr, "", 0)
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "%s v%s built %s commit %s\n\n", os.Args[0], BuildVersion, BuildDate, BuildCommit)
-	fmt.Fprintf(os.Stderr, "Usage:\n")
+	_ = showVersionInfo()
+	fmt.Fprintf(os.Stderr, "\nUsage:\n")
 	fmt.Fprintf(os.Stderr, "  %s [options...] <key=value...>\n\n", os.Args[0])
 	fmt.Fprintf(os.Stderr, "Options:\n")
 	flag.PrintDefaults()
@@ -53,8 +54,7 @@ func Run() int {
 	flag.Parse()
 
 	if showVersion {
-		logger.Printf("mj v%s (built %s)", BuildVersion, BuildDate)
-		return 0
+		return showVersionInfo()
 	}
 
 	in := Struct{}
@@ -98,5 +98,32 @@ func Run() int {
 	}
 
 	fmt.Println(p.Output())
+	return 0
+}
+
+func showVersionInfo() int {
+	bi, ok := debug.ReadBuildInfo()
+	if !ok {
+		fmt.Fprintf(os.Stderr, "%s [error: no build information]\n", os.Args[0])
+		return 1
+	}
+
+	version := bi.Main.Version
+	dirty := false
+	if version == "(devel)" {
+		for _, s := range bi.Settings {
+			if s.Key == "vcs.revision" {
+				version = s.Value
+			}
+			if s.Key == "vcs.modified" && s.Value == "true" {
+				dirty = true
+			}
+		}
+	}
+	if dirty {
+		version = version + "-dirty"
+	}
+
+	fmt.Fprintf(os.Stderr, "%s version %s\n", bi.Path, version)
 	return 0
 }
