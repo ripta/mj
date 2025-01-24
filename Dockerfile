@@ -1,7 +1,7 @@
 ARG MJ_BUILD_DATE
 ARG MJ_VERSION
 
-FROM golang:1.19-bullseye AS build
+FROM golang:1.22-bookworm AS build
 ENV MJ_BUILD_DATE=$MJ_BUILD_DATE MJ_VERSION=$MJ_VERSION
 WORKDIR $GOPATH/src/github.com/ripta/mj
 COPY go.mod go.sum ./
