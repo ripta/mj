@@ -6,8 +6,10 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	testscript.RunMain(m, map[string]func() int{
-		"mj": Run,
+	testscript.Main(m, map[string]func(){
+		"mj": func() {
+			_ = Run()
+		},
 	})
 }
 
