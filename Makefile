@@ -18,4 +18,4 @@ push-docker: build-docker
 	docker push ripta/mj:$(MJVERSION)
 
 test: $(FILES)
-	go test
+	go test ./...
