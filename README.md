@@ -69,6 +69,16 @@ mj: encountered error while processing argument #0: "foo[].bar=abc"
 	underlying error: while processing key path [foo[] bar]: cannot set key "bar" to "abc" on []interface {}: not supported
 ```
 
+And be careful that numeric keys are _not_ interpreted as array indices:
+
+```shell
+$ mj foo.0=bar foo.1=baz
+{"foo":{"0":"bar","1":"baz"}}
+
+$ mj foo.0.bar=baz
+{"foo":{"0":{"bar":"baz"}}}
+```
+
 By default, values are interpreted as-is:
 
 ```shell

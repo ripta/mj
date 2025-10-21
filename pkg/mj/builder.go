@@ -38,11 +38,11 @@ func (s Struct) Set(keyPath []string, value interface{}) error {
 			return fmt.Errorf("key sub-path #%d in %s must not be empty", keyIdx, keyPath)
 		}
 
-		usedPath := strings.Join(keyPath[0:keyIdx], ".")
-		newPath := strings.Join(keyPath[0:keyIdx+1], ".")
-
 		dataNext, err := s.setOn(data, key, Struct{})
 		if err != nil && err != ErrAlreadyExists {
+			usedPath := strings.Join(keyPath[0:keyIdx], ".")
+			newPath := strings.Join(keyPath[0:keyIdx+1], ".")
+
 			return errors.Wrapf(err, "in key path %q while processing key path %q", usedPath, newPath)
 		}
 		data = dataNext

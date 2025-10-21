@@ -2,7 +2,7 @@ package mj
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -28,7 +28,7 @@ func (p *Processor) Process(arg string) error {
 
 	if p.ReadFilePrefix != "" && strings.HasPrefix(value, p.ReadFilePrefix) {
 		fn := strings.TrimPrefix(value, p.ReadFilePrefix)
-		v, err := ioutil.ReadFile(fn)
+		v, err := os.ReadFile(fn)
 		if err != nil {
 			return err
 		}

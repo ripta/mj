@@ -8,6 +8,10 @@ exec mj foo.bar[]=abc foo.bar[]=def
 cmp stdout nested.txt
 ! stderr .
 
+exec mj foo.0=bar foo.1=baz
+cmp stdout numeric_keys.txt
+! stderr .
+
 # TODO: array in the middle of the path is not yet supported
 exec mj foo.bar[].abc=1 foo.bar[].def=2
 ! stdout .
@@ -17,6 +21,8 @@ cmp stderr unsupported.txt
 {"foo":["abc","def"]}
 -- nested.txt --
 {"foo":{"bar":["abc","def"]}}
+-- numeric_keys.txt --
+{"foo":{"0":"bar","1":"baz"}}
 -- unsupported.txt --
 mj: encountered error while processing argument #0: "foo.bar[].abc=1"
 	in key path "foo.bar[].abc": cannot set key "abc" to "1" on []interface {}: operation not yet supported
