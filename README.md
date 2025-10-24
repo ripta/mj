@@ -115,14 +115,14 @@ $ mj price:float=19.99
 $ mj temp:int=-10
 {"temp":-10}
 
-# Booleans
+# Booleans take True/T/t/true False/F/f/false or 1/0
 $ mj active:bool=true
 {"active":true}
 
 $ mj deleted:bool=false
 {"deleted":false}
 
-# Null
+# Nulls must have no value
 $ mj value:null=
 {"value":null}
 
@@ -134,7 +134,8 @@ $ mj name=Alice age:int=30 premium:bool=true
 $ mj user.name=Bob user.age:int=25 user.verified:bool=true
 {"user":{"age":25,"name":"Bob","verified":true}}
 
-# Arrays with types
+# Arrays with types: the [] come before the type suffix.
+# The type must be consistent across all elements.
 $ mj scores[]:int=95 scores[]:int=87 scores[]:int=92
 {"scores":[95,87,92]}
 ```

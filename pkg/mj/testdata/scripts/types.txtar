@@ -8,8 +8,8 @@ stdout '{"price":19.99}'
 exec mj active:bool=true
 stdout '{"active":true}'
 
-exec mj value:null=ignored
-stdout '{"value":null}'
+! exec mj value:null=ignored
+stderr 'cannot parse non-empty "ignored" as null'
 
 exec mj value:null=
 stdout '{"value":null}'
@@ -49,8 +49,8 @@ stderr 'cannot parse "maybe" as bool'
 stderr 'cannot parse "yes" as bool'
 
 # Test null with any value
-exec mj a:null= b:null=anything c:null=123
-stdout '{"a":null,"b":null,"c":null}'
+! exec mj a:null= b:null=anything c:null=123
+stderr 'cannot parse non-empty "anything" as null'
 
 # Test float vs int
 exec mj exact:int=42 precise:float=42.0

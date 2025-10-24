@@ -92,6 +92,9 @@ func parseTypedValue(value string, vtype ValueType) (interface{}, error) {
 		}
 		return v, nil
 	case TypeNull:
+		if value != "" {
+			return nil, fmt.Errorf("cannot parse non-empty %q as null", value)
+		}
 		return nil, nil
 	case TypeString:
 		return value, nil
