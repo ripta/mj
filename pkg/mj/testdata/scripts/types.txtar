@@ -92,6 +92,9 @@ stdout '{"bignum":9223372036854775807}'
 exec mj zero:int=0 nada:float=0.0 nope:bool=false
 stdout '{"nada":0,"nope":false,"zero":0}'
 
+exec mj zero:int= nada:float= nope:bool=
+stdout '{"nada":0,"nope":false,"zero":0}'
+
 # Multiple nested levels with types
 exec mj a.b.c:int=1 a.b.d:float=2.5 a.b.e=text
 stdout '{"a":{"b":{"c":1,"d":2.5,"e":"text"}}}'

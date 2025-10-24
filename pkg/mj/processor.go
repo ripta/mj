@@ -65,18 +65,27 @@ func (p *Processor) parseTypeSuffix(key string) (string, ValueType) {
 func parseTypedValue(value string, vtype ValueType) (interface{}, error) {
 	switch vtype {
 	case TypeInt:
+		if value == "" {
+			return 0, nil
+		}
 		v, err := strconv.ParseInt(value, 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("cannot parse %q as int: %w", value, err)
 		}
 		return v, nil
 	case TypeFloat:
+		if value == "" {
+			return 0.0, nil
+		}
 		v, err := strconv.ParseFloat(value, 64)
 		if err != nil {
 			return nil, fmt.Errorf("cannot parse %q as float: %w", value, err)
 		}
 		return v, nil
 	case TypeBool:
+		if value == "" {
+			return false, nil
+		}
 		v, err := strconv.ParseBool(value)
 		if err != nil {
 			return nil, fmt.Errorf("cannot parse %q as bool: %w", value, err)
