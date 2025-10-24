@@ -34,16 +34,19 @@ exec mj -t=/ age/int=25 name=Alice
 stdout '{"age":25,"name":"Alice"}'
 
 # Test boolean variants
-exec mj a:bool=true b:bool=false c:bool=1 d:bool=0
-stdout '{"a":true,"b":false,"c":true,"d":false}'
+exec mj a:bool=true b:bool=false c:bool=1 d:bool=0 e:bool=t f:bool=f
+stdout '{"a":true,"b":false,"c":true,"d":false,"e":true,"f":false}'
 
 # Test invalid int value
 ! exec mj age:int=not-a-number
-stderr 'cannot parse'
+stderr 'cannot parse "not-a-number" as int'
 
 # Test invalid bool value
 ! exec mj active:bool=maybe
-stderr 'cannot parse'
+stderr 'cannot parse "maybe" as bool'
+
+! exec mj active:bool=yes
+stderr 'cannot parse "yes" as bool'
 
 # Test null with any value
 exec mj a:null= b:null=anything c:null=123
