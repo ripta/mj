@@ -37,11 +37,24 @@ func usage() {
 
   mj foo=bar | mj baz=quux	{"baz":"quux"}
   mj foo=bar | mj -m=- baz=quux	{"baz":"quux","foo":"bar"}
+
+Type suffixes:
+  mj age:int=25			{"age":25}
+  mj price:float=19.99		{"price":19.99}
+  mj active:bool=true		{"active":true}
+  mj deleted:null=		{"deleted":null}
+  mj name:string=Alice		{"name":"Alice"}
+  mj name=Alice			{"name":"Alice"} (default is string)
+  
+  mj scores:int[]=95 scores:int[]=87	{"scores":[95,87]}
+  mj user.age:int=25 user.name=Bob	{"user":{"age":25,"name":"Bob"}}
+  
+  mj -t=/ age/int=25		{"age":25} (custom separator)
   `)
 }
 
 func Run() int {
-	var kvSeparator, pathSeparator string
+	var kvSeparator, pathSeparator, typeSeparator string
 	var readFilePrefix, readFrom string
 	var showVersion bool
 
@@ -50,6 +63,7 @@ func Run() int {
 	flag.StringVar(&kvSeparator, "s", "=", "Separator between key and value")
 	flag.StringVar(&pathSeparator, "p", ".", "Separator between key-path components")
 	flag.StringVar(&readFilePrefix, "r", "", "Prefix (for values) that indicate reading from a local file; reading value from a file is disabled when this flag is empty (default empty)")
+	flag.StringVar(&typeSeparator, "t", ":", "Separator between key and type suffix")
 	flag.BoolVar(&showVersion, "version", false, "Show version")
 	flag.Parse()
 
@@ -87,6 +101,7 @@ func Run() int {
 		KeyValueSeparator: kvSeparator,
 		KeyPathSeparator:  pathSeparator,
 		ReadFilePrefix:    readFilePrefix,
+		TypeSeparator:     typeSeparator,
 	}
 
 	for i, arg := range flag.Args() {
