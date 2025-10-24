@@ -100,24 +100,9 @@ func (p *Processor) Process(arg string) error {
 	keyPathStr := segments[0]
 	value := segments[1]
 
-	// Check for array syntax before splitting the path
-	isArray := strings.HasSuffix(keyPathStr, "[]")
-	if isArray {
-		keyPathStr = strings.TrimSuffix(keyPathStr, "[]")
-	}
-
-	// Parse type suffix from the key (after removing array syntax)
 	keyPathStr, vtype := p.parseTypeSuffix(keyPathStr)
-
-	// Now split the path
 	keyPath := strings.Split(keyPathStr, p.KeyPathSeparator)
 
-	// Restore array syntax to the last key component if needed
-	if isArray {
-		keyPath = append(keyPath, "[]")
-	}
-
-	// Handle file reading
 	if p.ReadFilePrefix != "" && strings.HasPrefix(value, p.ReadFilePrefix) {
 		fn := strings.TrimPrefix(value, p.ReadFilePrefix)
 		v, err := os.ReadFile(fn)
@@ -127,7 +112,6 @@ func (p *Processor) Process(arg string) error {
 		value = string(v)
 	}
 
-	// Parse the value according to its type
 	typedValue, err := parseTypedValue(value, vtype)
 	if err != nil {
 		return err

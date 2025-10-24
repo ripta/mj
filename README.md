@@ -135,7 +135,7 @@ $ mj user.name=Bob user.age:int=25 user.verified:bool=true
 {"user":{"age":25,"name":"Bob","verified":true}}
 
 # Arrays with types
-$ mj scores:int[]=95 scores:int[]=87 scores:int[]=92
+$ mj scores[]:int=95 scores[]:int=87 scores[]:int=92
 {"scores":[95,87,92]}
 ```
 

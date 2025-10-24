@@ -26,7 +26,7 @@ exec mj user.age:int=25 user.name=Bob
 stdout '{"user":{"age":25,"name":"Bob"}}'
 
 # Test arrays with types
-exec mj scores:int[]=95 scores:int[]=87 scores:int[]=92
+exec mj scores[]:int=95 scores[]:int=87 scores[]:int=92
 stdout '{"scores":\[95,87,92\]}'
 
 # Test custom type separator
@@ -94,7 +94,7 @@ exec mj a.b.c:int=1 a.b.d:float=2.5 a.b.e=text
 stdout '{"a":{"b":{"c":1,"d":2.5,"e":"text"}}}'
 
 # Arrays of different types
-exec mj ints:int[]=1 ints:int[]=2 floats:float[]=1.5 floats:float[]=2.5 strs[]=a strs[]=b
+exec mj ints[]:int=1 ints[]:int=2 floats[]:float=1.5 floats[]:float=2.5 strs[]=a strs[]=b
 stdout '{"floats":\[1.5,2.5\],"ints":\[1,2\],"strs":\["a","b"\]}'
 
 # Unrecognized type suffix treated as part of key name

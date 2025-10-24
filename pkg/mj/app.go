@@ -38,7 +38,6 @@ func usage() {
   mj foo=bar | mj baz=quux	{"baz":"quux"}
   mj foo=bar | mj -m=- baz=quux	{"baz":"quux","foo":"bar"}
 
-Type suffixes:
   mj age:int=25			{"age":25}
   mj price:float=19.99		{"price":19.99}
   mj active:bool=true		{"active":true}
@@ -46,7 +45,7 @@ Type suffixes:
   mj name:string=Alice		{"name":"Alice"}
   mj name=Alice			{"name":"Alice"} (default is string)
   
-  mj scores:int[]=95 scores:int[]=87	{"scores":[95,87]}
+  mj scores[]:int=95 scores[]:int=87	{"scores":[95,87]}
   mj user.age:int=25 user.name=Bob	{"user":{"age":25,"name":"Bob"}}
   
   mj -t=/ age/int=25		{"age":25} (custom separator)
