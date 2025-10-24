@@ -103,6 +103,12 @@ stdout '{"a":{"b":{"c":1,"d":2.5,"e":"text"}}}'
 exec mj ints[]:int=1 ints[]:int=2 floats[]:float=1.5 floats[]:float=2.5 strs[]=a strs[]=b
 stdout '{"floats":\[1.5,2.5\],"ints":\[1,2\],"strs":\["a","b"\]}'
 
+exec mj mixed[]:int=1 mixed[]:float=2.5 mixed[]=text
+stdout '{"mixed":\[1,2.5,"text"\]}'
+
+exec mj items[]=apple items[]:int=42 items[]:bool=true items[]:null=
+stdout '{"items":\["apple",42,true,null\]}'
+
 # Unrecognized type suffix treated as part of key name
 exec mj age:unknown=25
 stdout '{"age:unknown":"25"}'

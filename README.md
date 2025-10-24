@@ -135,9 +135,12 @@ $ mj user.name=Bob user.age:int=25 user.verified:bool=true
 {"user":{"age":25,"name":"Bob","verified":true}}
 
 # Arrays with types: the [] come before the type suffix.
-# The type must be consistent across all elements.
 $ mj scores[]:int=95 scores[]:int=87 scores[]:int=92
 {"scores":[95,87,92]}
+
+# Arrays can also hold mixed types
+$ mj items[]=apple items[]=42 items[]=true items[]=null
+{"items":["apple",42,true,null]}
 ```
 
 Use the `-t` flag to change the type separator (default `:`):
