@@ -26,3 +26,6 @@ _testmain.go
 *.prof
 
 .idea
+
+# Added by goreleaser init:
+dist/
