@@ -1,14 +1,16 @@
 package mj
 
 import (
-	"github.com/rogpeppe/go-internal/testscript"
+	"os"
 	"testing"
+
+	"github.com/rogpeppe/go-internal/testscript"
 )
 
 func TestMain(m *testing.M) {
 	testscript.Main(m, map[string]func(){
 		"mj": func() {
-			_ = Run()
+			os.Exit(Run())
 		},
 	})
 }

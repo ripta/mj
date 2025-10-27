@@ -86,10 +86,87 @@ $ mj foo=@bar.txt
 {"foo":"@bar.txt"}
 ```
 
-However, you can designate certain prefixes to read values from a file:
+However, you can designate certain prefixes to read values from a file,
+using the `-r` flag. The default prefix is blank, which disables file reading,
+as shown above.
 
 ```shell
 $ echo hello-world > bar.txt
 $ mj -r=@ foo=@bar.txt
 {"foo":"hello-world\n"}
 ```
+
+By default, all values are treated as strings. Use type suffixes to create other JSON primitives:
+
+- `:string` - String value (default, can be omitted)
+- `:int` - Integer number
+- `:float` - Floating-point number
+- `:bool` - Boolean (`true`/`false`, `1`/`0`)
+- `:null` - Null value (value part ignored)
+
+```shell
+# Numbers
+$ mj age:int=25
+{"age":25}
+
+$ mj price:float=19.99
+{"price":19.99}
+
+$ mj temp:int=-10
+{"temp":-10}
+
+# Booleans take True/T/t/true False/F/f/false or 1/0
+$ mj active:bool=true
+{"active":true}
+
+$ mj deleted:bool=false
+{"deleted":false}
+
+# Nulls must have no value
+$ mj value:null=
+{"value":null}
+
+# Mixed types
+$ mj name=Alice age:int=30 premium:bool=true
+{"age":30,"name":"Alice","premium":true}
+
+# With nested objects
+$ mj user.name=Bob user.age:int=25 user.verified:bool=true
+{"user":{"age":25,"name":"Bob","verified":true}}
+
+# Arrays with types: the [] come before the type suffix.
+$ mj scores[]:int=95 scores[]:int=87 scores[]:int=92
+{"scores":[95,87,92]}
+
+# Arrays can also hold mixed types
+$ mj items[]=apple items[]=42 items[]=true items[]=null
+{"items":["apple",42,true,null]}
+```
+
+Use the `-t` flag to change the type separator (default `:`):
+
+```shell
+$ mj -t=/ age/int=25
+{"age":25}
+```
+
+This is useful when your keys contain colons:
+
+```shell
+$ mj -t=/ "url:port"=8080 "url:host"=localhost
+{"url:host":"localhost","url:port":"8080"}
+
+$ mj -t=/ url:port/int=8080 url:host=localhost
+{"url:host":"localhost","url:port":8080}
+```
+
+Invalid values for typed fields will produce errors:
+
+```shell
+$ mj age:int=not-a-number
+Error: cannot parse "not-a-number" as int
+
+$ mj active:bool=maybe
+Error: cannot parse "maybe" as bool
+```
+

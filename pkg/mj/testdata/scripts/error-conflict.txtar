@@ -1,4 +1,4 @@
-exec mj foo=bar foo=quux
+! exec mj foo=bar foo=quux
 ! stdout .
 cmp stderr conflict.txt
 

@@ -1,0 +1,122 @@
+# Test basic type suffixes
+exec mj age:int=25
+stdout '{"age":25}'
+
+exec mj price:float=19.99
+stdout '{"price":19.99}'
+
+exec mj active:bool=true
+stdout '{"active":true}'
+
+! exec mj value:null=ignored
+stderr 'cannot parse non-empty "ignored" as null'
+
+exec mj value:null=
+stdout '{"value":null}'
+
+! exec mj value:null
+stderr 'missing separator \("="\) in "value:null"'
+
+# Test mixed types
+exec mj name=Alice age:int=30 score:float=95.5 active:bool=true
+stdout '{"active":true,"age":30,"name":"Alice","score":95.5}'
+
+# Test nested with types
+exec mj user.age:int=25 user.name=Bob
+stdout '{"user":{"age":25,"name":"Bob"}}'
+
+# Test arrays with types
+exec mj scores[]:int=95 scores[]:int=87 scores[]:int=92
+stdout '{"scores":\[95,87,92\]}'
+
+# Test custom type separator
+exec mj -t=/ age/int=25 name=Alice
+stdout '{"age":25,"name":"Alice"}'
+
+# Test boolean variants
+exec mj a:bool=true b:bool=false c:bool=1 d:bool=0 e:bool=t f:bool=f
+stdout '{"a":true,"b":false,"c":true,"d":false,"e":true,"f":false}'
+
+# Test invalid int value
+! exec mj age:int=not-a-number
+stderr 'cannot parse "not-a-number" as int'
+
+# Test invalid bool value
+! exec mj active:bool=maybe
+stderr 'cannot parse "maybe" as bool'
+
+! exec mj active:bool=yes
+stderr 'cannot parse "yes" as bool'
+
+# Test null with any value
+! exec mj a:null= b:null=anything c:null=123
+stderr 'cannot parse non-empty "anything" as null'
+
+# Test float vs int
+exec mj exact:int=42 precise:float=42.0
+stdout '{"exact":42,"precise":42}'
+
+# Test negative numbers
+exec mj temp:int=-10 balance:float=-15.50
+stdout '{"balance":-15.5,"temp":-10}'
+
+# Test explicit string type
+exec mj name:string=Alice
+stdout '{"name":"Alice"}'
+
+# Test backward compatibility - no type means string
+exec mj foo=bar
+stdout '{"foo":"bar"}'
+
+# Type suffix should work with path separators
+exec mj foo.bar:int=42
+stdout '{"foo":{"bar":42}}'
+
+# Type suffix with custom path separator
+exec mj -p=/ foo/bar:int=42
+stdout '{"foo":{"bar":42}}'
+
+# Empty string values
+exec mj name:string= value=
+stdout '{"name":"","value":""}'
+
+# Scientific notation for floats - JSON encodes as regular numbers
+exec mj big:float=1e10 small:float=1.5e-3
+stdout '{"big":10000000000,"small":0.0015}'
+
+# Large integers
+exec mj bignum:int=9223372036854775807
+stdout '{"bignum":9223372036854775807}'
+
+# Zero values
+exec mj zero:int=0 nada:float=0.0 nope:bool=false
+stdout '{"nada":0,"nope":false,"zero":0}'
+
+exec mj zero:int= nada:float= nope:bool=
+stdout '{"nada":0,"nope":false,"zero":0}'
+
+# Multiple nested levels with types
+exec mj a.b.c:int=1 a.b.d:float=2.5 a.b.e=text
+stdout '{"a":{"b":{"c":1,"d":2.5,"e":"text"}}}'
+
+# Arrays of different types
+exec mj ints[]:int=1 ints[]:int=2 floats[]:float=1.5 floats[]:float=2.5 strs[]=a strs[]=b
+stdout '{"floats":\[1.5,2.5\],"ints":\[1,2\],"strs":\["a","b"\]}'
+
+exec mj mixed[]:int=1 mixed[]:float=2.5 mixed[]=text
+stdout '{"mixed":\[1,2.5,"text"\]}'
+
+exec mj items[]=apple items[]:int=42 items[]:bool=true items[]:null=
+stdout '{"items":\["apple",42,true,null\]}'
+
+# Unrecognized type suffix treated as part of key name
+exec mj age:unknown=25
+stdout '{"age:unknown":"25"}'
+
+# Keys with colon when using custom type separator
+exec mj -t=/ time:stamp=2024
+stdout '{"time:stamp":"2024"}'
+
+# Mix of custom separator and colons in key names
+exec mj -t=/ url:port/int=8080 url:host=localhost
+stdout '{"url:host":"localhost","url:port":8080}'
