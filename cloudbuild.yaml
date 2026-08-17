@@ -1,0 +1,17 @@
+# GCB CI for mj. Triggers mj-pr and mj-master, both in us-central1.
+#
+# - `make mj` runs before `make test`. `go test` never links with -ldflags.
+# - Image tracks the Dockerfile, not the `go 1.25` floor in go.mod.
+
+steps:
+  - id: CI
+    name: 'golang:1.26-trixie'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -e
+        make mj
+        make test
+
+timeout: 600s
